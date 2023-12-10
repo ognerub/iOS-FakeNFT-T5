@@ -44,6 +44,8 @@
 		D58461592B25C28700F0FA7F /* ProfileDecomposition.md in Resources */ = {isa = PBXBuildFile; fileRef = D58461582B25C28700F0FA7F /* ProfileDecomposition.md */; };
 		D584615C2B25C2B800F0FA7F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D584615B2B25C2B800F0FA7F /* ProfileViewController.swift */; };
 		D584615E2B25CAFB00F0FA7F /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D584615D2B25CAFB00F0FA7F /* ProfileTableViewCell.swift */; };
+		D58461612B2615FC00F0FA7F /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58461602B2615FC00F0FA7F /* EditProfileViewController.swift */; };
+		D58461662B26459B00F0FA7F /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58461652B26459B00F0FA7F /* UIImage+Extensions.swift */; };
 		E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */; };
 		E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */; };
 		E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */; };
@@ -106,6 +108,8 @@
 		D58461582B25C28700F0FA7F /* ProfileDecomposition.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ProfileDecomposition.md; sourceTree = "<group>"; };
 		D584615B2B25C2B800F0FA7F /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		D584615D2B25CAFB00F0FA7F /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
+		D58461602B2615FC00F0FA7F /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		D58461652B26459B00F0FA7F /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		E1CD40D92A96BE7D00BE7FE8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -233,6 +237,7 @@
 				3F6806CE29CBBD1B00B4F915 /* Foundation */,
 				3F6806C929CBBCAF00B4F915 /* Models */,
 				3F6806C729CBBC5B00B4F915 /* Scenes  */,
+				D58461642B26456300F0FA7F /* Helpers */,
 				3F6806C629CBBC4E00B4F915 /* Services */,
 				3F6806A429CBBAF200B4F915 /* Info.plist */,
 			);
@@ -346,10 +351,27 @@
 		D584615A2B25C29F00F0FA7F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				D584615F2B2615D900F0FA7F /* EditProfile */,
 				D584615B2B25C2B800F0FA7F /* ProfileViewController.swift */,
 				D584615D2B25CAFB00F0FA7F /* ProfileTableViewCell.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		D584615F2B2615D900F0FA7F /* EditProfile */ = {
+			isa = PBXGroup;
+			children = (
+				D58461602B2615FC00F0FA7F /* EditProfileViewController.swift */,
+			);
+			path = EditProfile;
+			sourceTree = "<group>";
+		};
+		D58461642B26456300F0FA7F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				D58461652B26459B00F0FA7F /* UIImage+Extensions.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		E19CD5A92A98B55900CA39A5 /* Cell */ = {
@@ -553,6 +575,7 @@
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				D584615E2B25CAFB00F0FA7F /* ProfileTableViewCell.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
+				D58461612B2615FC00F0FA7F /* EditProfileViewController.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* NftService.swift in Sources */,
 				D584615C2B25C2B800F0FA7F /* ProfileViewController.swift in Sources */,
@@ -572,6 +595,7 @@
 				3F6806D329CBBE9600B4F915 /* NetworkRequest.swift in Sources */,
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
+				D58461662B26459B00F0FA7F /* UIImage+Extensions.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
 			);

@@ -22,7 +22,7 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "person"))
+        let imageView = UIImageView(image: UIImage(named: "Image1"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 35
         imageView.clipsToBounds = true
@@ -175,6 +175,6 @@ private extension ProfileViewController {
     
     @objc
     func editProfile() {
-        
+        present(EditProfileViewController(), animated: true)
     }
 }

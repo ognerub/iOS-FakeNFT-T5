@@ -18,7 +18,7 @@ final class ProfileTableViewCell: UITableViewCell {
         return label
     }()
     private lazy var chevronView: UIImageView = {
-        let image = UIImage(systemName: "chevron.right")        
+        let image = UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysOriginal)
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = image
