@@ -10,6 +10,11 @@ final class TabBarController: UITabBarController {
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
         image: UIImage(systemName: "square.stack.3d.up.fill"),
+        tag: 1
+    )
+    private let profileTabBarItem = UITabBarItem(
+        title: "Профиль",
+        image: UIImage(named: "Profile"),
         tag: 0
     )
     
@@ -19,10 +24,12 @@ final class TabBarController: UITabBarController {
         let catalogController = TestCatalogViewController(
             servicesAssembly: servicesAssembly
         )
-        
         catalogController.tabBarItem = catalogTabBarItem
         
-        viewControllers = [catalogController]
+        let profileController = ProfileViewController()
+        profileController.tabBarItem = profileTabBarItem
+        
+        viewControllers = [profileController, catalogController]
         selectedIndex = 0
         
         view.backgroundColor = .systemBackground
