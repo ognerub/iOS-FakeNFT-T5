@@ -88,7 +88,10 @@ final class ProfileViewController: UIViewController {
 
 //MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
-    //TODO: - Логика нажатия на ячейки
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectCell(cellIndex: indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 //MARK: - UITableViewDataSource
@@ -128,6 +131,7 @@ extension ProfileViewController: UITableViewDataSource {
 private extension ProfileViewController {
     func setupView() {
         view.backgroundColor = .ypWhiteDay
+        navigationController?.navigationBar.isHidden = true
         
         addSubViews()
         configureConstraints()
@@ -171,6 +175,17 @@ private extension ProfileViewController {
             tableView.topAnchor.constraint(equalTo: urlTextView.bottomAnchor, constant: 40),
             tableView.heightAnchor.constraint(equalToConstant: 162)
         ])
+    }
+    
+    func selectCell(cellIndex: Int) {
+        switch cellIndex {
+            case 0:
+                navigationController?.pushViewController(MyNftViewController(), animated: false)
+            case 1:
+                print()
+            default:
+                print()
+        }
     }
     
     @objc

@@ -28,8 +28,9 @@ final class TabBarController: UITabBarController {
         
         let profileController = ProfileViewController()
         profileController.tabBarItem = profileTabBarItem
+        let profileNavigationController = UINavigationController(rootViewController: profileController)
         
-        viewControllers = [profileController, catalogController]
+        viewControllers = [profileNavigationController, catalogController]
         selectedIndex = 0
         
         view.backgroundColor = .systemBackground
