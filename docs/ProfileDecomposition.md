@@ -10,15 +10,15 @@
 ## Module 1:
 
 #### Верстка
-- Сверстать главный экран профиля (est: 3 hours; fact: x hours).
-- Сверстать экран редактирования профиля (est: 3 hours; fact: x hours).
-- Сверстать экран мои NFT (est: 3 hours; fact: x hours).
-- Сверстать экран избранных NFT (est: 3 hours; fact: x hours).
+- Сверстать главный экран профиля (est: 3 hours; fact: 3 hours).
+- Сверстать экран редактирования профиля (est: 3 hours; fact: 3 hours).
+- Сверстать экран мои NFT (est: 3 hours; fact: 3 hours).
+- Сверстать экран избранных NFT (est: 3 hours; fact: 3 hours).
 
 #### Логика
-- Добавить переход на webView (est: 4 hours; fact: x hours).
+- Добавить переход на webView (est: 4 hours; fact: 1 hours).
 
-`Total:` est: 16 hours; fact: x hours.
+`Total:` est: 16 hours; fact: 13 hours.
 
 
 ## Module 2:

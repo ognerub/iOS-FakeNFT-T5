@@ -22,7 +22,7 @@ final class EditProfileViewController: UIViewController {
         return button
     }()
     private lazy var editPhotoButton: UIButton = {
-        let imageButton = UIImage(named: "Image1")!.alpha(0.6)
+        let imageButton = UIImage(named: "Image1")?.alpha(0.6)
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false

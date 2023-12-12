@@ -53,21 +53,25 @@ final class ProfileViewController: UIViewController {
         
         return textView
     }()
-    private lazy var urlTextView: UITextView = {
-        let textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.font = .systemFont(ofSize: 15, weight: .regular)
-        textView.textColor = .ypBlueUniversal
-        textView.text = "Joaquin Phoenix.com"
-        textView.isEditable = false
+    private lazy var urlButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
         
-        return textView
+        button.setTitle("Joaquin Phoenix.com", for: .normal)
+        button.setTitleColor(.ypBlueUniversal, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+        button.titleLabel?.textAlignment = .left
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.addTarget(self, action: #selector(openWebView), for: .touchUpInside)
+        
+        return button
     }()
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: "profileTableViewCell")
+        tableView.alwaysBounceVertical = false
         tableView.separatorStyle = .none
         tableView.backgroundColor = .ypWhiteDay
         tableView.dataSource = self
@@ -142,7 +146,7 @@ private extension ProfileViewController {
         view.addSubview(avatarImageView)
         view.addSubview(nameLabel)
         view.addSubview(bioTextView)
-        view.addSubview(urlTextView)
+        view.addSubview(urlButton)
         view.addSubview(tableView)
     }
     
@@ -165,14 +169,13 @@ private extension ProfileViewController {
             bioTextView.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 20),
             bioTextView.heightAnchor.constraint(equalToConstant: 75),
             
-            urlTextView.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
-            urlTextView.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
-            urlTextView.topAnchor.constraint(equalTo: bioTextView.bottomAnchor, constant: 8),
-            urlTextView.heightAnchor.constraint(equalToConstant: 28),
+            urlButton.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
+            urlButton.topAnchor.constraint(equalTo: bioTextView.bottomAnchor, constant: 8),
+            urlButton.heightAnchor.constraint(equalToConstant: 28),
             
             tableView.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: urlTextView.bottomAnchor, constant: 40),
+            tableView.topAnchor.constraint(equalTo: urlButton.bottomAnchor, constant: 40),
             tableView.heightAnchor.constraint(equalToConstant: 162)
         ])
     }
@@ -184,13 +187,17 @@ private extension ProfileViewController {
             case 1:
                 navigationController?.pushViewController(FavoriteNftsViewController(), animated: false)
             default:
-                //TODO: Открыть webView
-                navigationController?.pushViewController(WebViewViewController(), animated: false)
+                openWebView()
         }
     }
     
     @objc
     func editProfile() {
         present(EditProfileViewController(), animated: true)
+    }
+    
+    @objc
+    func openWebView() {
+        navigationController?.pushViewController(WebViewViewController(), animated: false)
     }
 }
