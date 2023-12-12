@@ -132,6 +132,35 @@ private extension MyNftViewController{
 
     }
     
+    func showSortAlert() {
+        let alert = UIAlertController(
+            title: "Сортировка",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(title: "По цене",
+                                      style: .default) { _ in
+
+        })
+        alert.addAction(UIAlertAction(
+            title: "По рейтингу",
+            style: .default
+        ) { _ in
+        })
+        alert.addAction(UIAlertAction(
+            title: "По названию",
+            style: .default
+        ) { _ in
+        })
+        alert.addAction(UIAlertAction(
+            title: "Закрыть",
+            style: .cancel
+        ) { _ in
+        })
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     @objc
     func back() {
         navigationController?.popToRootViewController(animated: false)
@@ -139,6 +168,6 @@ private extension MyNftViewController{
     
     @objc
     func sort() {
-        
+        showSortAlert()
     }
 }
