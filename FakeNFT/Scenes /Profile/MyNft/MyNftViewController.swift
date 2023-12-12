@@ -54,6 +54,15 @@ final class MyNftViewController: UIViewController {
         
         return tableView
     }()
+    private lazy var emptyNftsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 17, weight: .bold)
+        label.textColor = .ypBlackDay
+        label.text = "У Вас ещё нет NFT"
+        
+        return label
+    }()
     
     //MARK: - Private variables
     private let nfts: [String] = ["Lilo", "Spring", "April"]
@@ -99,11 +108,18 @@ private extension MyNftViewController{
     func setupView() {
         view.backgroundColor = .ypWhiteDay
         
+        let showHideElements = nfts.isEmpty
+        emptyNftsLabel.isHidden = !showHideElements
+        filtersButton.isHidden = showHideElements
+        headerLabel.isHidden = showHideElements
+        tableView.isHidden = showHideElements
+        
         addSubViews()
         configureConstraints()
     }
     
     func addSubViews() {
+        view.addSubview(emptyNftsLabel)
         view.addSubview(backButton)
         view.addSubview(filtersButton)
         view.addSubview(headerLabel)
@@ -112,6 +128,9 @@ private extension MyNftViewController{
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
+            emptyNftsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyNftsLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
             
