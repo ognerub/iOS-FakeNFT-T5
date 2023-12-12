@@ -182,7 +182,7 @@ private extension ProfileViewController {
             case 0:
                 navigationController?.pushViewController(MyNftViewController(), animated: false)
             case 1:
-                print()
+                navigationController?.pushViewController(FavoriteNftsViewController(), animated: false)
             default:
                 print()
         }
