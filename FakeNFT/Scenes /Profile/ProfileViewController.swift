@@ -184,7 +184,8 @@ private extension ProfileViewController {
             case 1:
                 navigationController?.pushViewController(FavoriteNftsViewController(), animated: false)
             default:
-                print()
+                //TODO: Открыть webView
+                navigationController?.pushViewController(WebViewViewController(), animated: false)
         }
     }
     
