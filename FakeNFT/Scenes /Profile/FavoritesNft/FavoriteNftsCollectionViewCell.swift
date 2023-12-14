@@ -8,6 +8,8 @@
 import UIKit
 
 final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
+    static let cellName = "favoriteNftsCell"
+    
     //MARK: - Layout variables
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -83,10 +85,10 @@ private extension FavoriteNftsCollectionViewCell {
             nftImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             nftImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             nftImageView.widthAnchor.constraint(equalToConstant: 80),
-
+            
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
             likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor),
-
+            
             ratingImageView.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 12),
             ratingImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             

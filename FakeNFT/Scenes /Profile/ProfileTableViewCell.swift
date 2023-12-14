@@ -8,6 +8,8 @@
 import UIKit
 
 final class ProfileTableViewCell: UITableViewCell {
+    static let cellName = "profileTableViewCell"
+    
     //MARK: - Layout variables
     private lazy var nameLabel: UILabel = {
         let label = UILabel()

@@ -70,7 +70,10 @@ final class ProfileViewController: UIViewController {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
-        tableView.register(ProfileTableViewCell.self, forCellReuseIdentifier: "profileTableViewCell")
+        tableView.register(
+            ProfileTableViewCell.self,
+            forCellReuseIdentifier: ProfileTableViewCell.cellName
+        )
         tableView.alwaysBounceVertical = false
         tableView.separatorStyle = .none
         tableView.backgroundColor = .ypWhiteDay
@@ -81,6 +84,8 @@ final class ProfileViewController: UIViewController {
         
         return tableView
     }()
+    
+    private var tableCells: [ProfileCellModel] = []
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -99,7 +104,7 @@ final class ProfileViewController: UIViewController {
 //MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectCell(cellIndex: indexPath.row)
+        tableCells[indexPath.row].action()
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
@@ -112,26 +117,16 @@ extension ProfileViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "profileTableViewCell",
+            withIdentifier: ProfileTableViewCell.cellName,
             for: indexPath
         ) as? ProfileTableViewCell else {
             return UITableViewCell()
         }
         
-        var name = ""
-        var count: Int?
-        
-        switch indexPath.row {
-            case 0:
-                name = "Мои NFT"
-                count = 112
-            case 1:
-                name = "Избранные NFT"
-                count = 11
-            default:
-                name = "О разработчике"
-        }
-        cell.configureCell(name: name, count: count)
+        cell.configureCell(
+            name: tableCells[indexPath.row].name,
+            count: tableCells[indexPath.row].count
+        )
         
         return cell
     }
@@ -143,6 +138,7 @@ private extension ProfileViewController {
         view.backgroundColor = .ypWhiteDay
         navigationController?.navigationBar.isHidden = true
         
+        fillTableCells()
         addSubViews()
         configureConstraints()
     }
@@ -186,15 +182,40 @@ private extension ProfileViewController {
         ])
     }
     
-    func selectCell(cellIndex: Int) {
-        switch cellIndex {
-            case 0:
-                navigationController?.pushViewController(MyNftViewController(), animated: true)
-            case 1:
-                navigationController?.pushViewController(FavoriteNftsViewController(), animated: true)
-            default:
-                openWebView()
-        }
+    func fillTableCells() {
+        tableCells.append(
+            ProfileCellModel(
+                name: "Мои NFT",
+                count: 112,
+                action: { [weak self] in
+                    guard let self = self else { return }
+                    self.navigationController?.pushViewController(
+                        MyNftViewController(),
+                        animated: true
+                    )
+                })
+        )
+        tableCells.append(
+            ProfileCellModel(
+                name: "Избранные NFT",
+                count: 11,
+                action: { [weak self] in
+                    guard let self = self else { return }
+                    self.navigationController?.pushViewController(
+                        FavoriteNftsViewController(),
+                        animated: true
+                    )
+                })
+        )
+        tableCells.append(
+            ProfileCellModel(
+                name: "О разработчике",
+                count: nil,
+                action: { [weak self] in
+                    guard let self = self else { return }
+                    self.openWebView()
+                })
+        )
     }
     
     @objc

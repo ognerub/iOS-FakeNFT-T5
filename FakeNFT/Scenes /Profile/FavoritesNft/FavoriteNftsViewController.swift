@@ -48,13 +48,21 @@ final class FavoriteNftsViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.alwaysBounceVertical = true
         
-        collectionView.register(FavoriteNftsCollectionViewCell.self, forCellWithReuseIdentifier: "favoriteNftsCell")
+        collectionView.register(
+            FavoriteNftsCollectionViewCell.self,
+            forCellWithReuseIdentifier: FavoriteNftsCollectionViewCell.cellName
+        )
         
         return collectionView
     }()
     
     //MARK: - Private variables
-    private let nfts: [String] = ["Lilo", "Spring", "April", "Archie", "Pixi", "Melissa","Lilo", "Spring", "April", "Archie", "Pixi", "Melissa"]
+    private let nfts: [String] = [
+        "Lilo", "Spring", "April",
+        "Archie", "Pixi", "Melissa",
+        "Lilo", "Spring", "April",
+        "Archie", "Pixi", "Melissa"
+    ]
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -76,16 +84,19 @@ extension FavoriteNftsViewController: UICollectionViewDataSource {
         return nfts.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "favoriteNftsCell",
+            withReuseIdentifier: FavoriteNftsCollectionViewCell.cellName,
             for: indexPath
         ) as? FavoriteNftsCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
-
+        
         cell.configureCell(name: nfts[indexPath.row])
-
+        
         return cell
     }
     
