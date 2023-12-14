@@ -55,6 +55,8 @@ final class EditProfileViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         
+        textField.setLeftPaddingPoints(16)
+        textField.setRightPaddingPoints(16)
         textField.autocorrectionType = UITextAutocorrectionType.no
         textField.returnKeyType = UIReturnKeyType.done
         textField.layer.cornerRadius = 12
@@ -81,6 +83,7 @@ final class EditProfileViewController: UIViewController {
         textView.layer.cornerRadius = 12
         textView.backgroundColor = .ypLightGreyDay
         textView.font = .systemFont(ofSize: 17, weight: .regular)
+        textView.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
         
         return textView
     }()
@@ -97,6 +100,8 @@ final class EditProfileViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         
+        textField.setLeftPaddingPoints(16)
+        textField.setRightPaddingPoints(16)
         textField.autocorrectionType = UITextAutocorrectionType.no
         textField.returnKeyType = UIReturnKeyType.done
         textField.layer.cornerRadius = 12
@@ -121,6 +126,7 @@ private extension EditProfileViewController {
         
         addSubViews()
         configureConstraints()
+        addTapGestureToHideKeyboard()
     }
     
     func addSubViews() {
@@ -184,5 +190,17 @@ private extension EditProfileViewController {
     @objc
     func changeAvatar() {
         
+    }
+}
+
+private extension EditProfileViewController {
+    func addTapGestureToHideKeyboard() {
+        let tapGesture = UITapGestureRecognizer(target: view, action: #selector(view.endEditing))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc
+    func tapGesture() {
+        descriptionTextField.resignFirstResponder()
     }
 }

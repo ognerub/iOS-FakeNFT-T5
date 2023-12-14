@@ -150,6 +150,6 @@ private extension FavoriteNftsViewController {
     
     @objc
     func back() {
-        navigationController?.popToRootViewController(animated: false)
+        navigationController?.popToRootViewController(animated: true)
     }
 }

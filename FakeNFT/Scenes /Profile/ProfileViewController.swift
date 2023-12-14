@@ -189,9 +189,9 @@ private extension ProfileViewController {
     func selectCell(cellIndex: Int) {
         switch cellIndex {
             case 0:
-                navigationController?.pushViewController(MyNftViewController(), animated: false)
+                navigationController?.pushViewController(MyNftViewController(), animated: true)
             case 1:
-                navigationController?.pushViewController(FavoriteNftsViewController(), animated: false)
+                navigationController?.pushViewController(FavoriteNftsViewController(), animated: true)
             default:
                 openWebView()
         }
@@ -204,6 +204,6 @@ private extension ProfileViewController {
     
     @objc
     func openWebView() {
-        navigationController?.pushViewController(WebViewViewController(), animated: false)
+        navigationController?.pushViewController(WebViewViewController(), animated: true)
     }
 }
