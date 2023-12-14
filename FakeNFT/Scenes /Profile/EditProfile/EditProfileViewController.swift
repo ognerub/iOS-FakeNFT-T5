@@ -59,6 +59,7 @@ final class EditProfileViewController: UIViewController {
         textField.returnKeyType = UIReturnKeyType.done
         textField.layer.cornerRadius = 12
         textField.backgroundColor = .ypLightGreyDay
+        textField.font = .systemFont(ofSize: 17, weight: .regular)
         
         return textField
     }()
@@ -71,16 +72,17 @@ final class EditProfileViewController: UIViewController {
         
         return label
     }()
-    private lazy var descriptionTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
+    private lazy var descriptionTextField: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
         
-        textField.autocorrectionType = UITextAutocorrectionType.no
-        textField.returnKeyType = UIReturnKeyType.done
-        textField.layer.cornerRadius = 12
-        textField.backgroundColor = .ypLightGreyDay
+        textView.autocorrectionType = UITextAutocorrectionType.no
+        textView.returnKeyType = UIReturnKeyType.done
+        textView.layer.cornerRadius = 12
+        textView.backgroundColor = .ypLightGreyDay
+        textView.font = .systemFont(ofSize: 17, weight: .regular)
         
-        return textField
+        return textView
     }()
     private lazy var urlLabel: UILabel = {
         let label = UILabel()
@@ -99,6 +101,7 @@ final class EditProfileViewController: UIViewController {
         textField.returnKeyType = UIReturnKeyType.done
         textField.layer.cornerRadius = 12
         textField.backgroundColor = .ypLightGreyDay
+        textField.font = .systemFont(ofSize: 17, weight: .regular)
         
         return textField
     }()

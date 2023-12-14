@@ -84,6 +84,7 @@ final class MyNftTableViewCell: UITableViewCell {
     //MARK: - Public functions
     func configureCell(name: String) {
         backgroundColor = .ypWhiteDay
+        selectionStyle = .none
         nameLabel.text = name
         
         addSubViews()

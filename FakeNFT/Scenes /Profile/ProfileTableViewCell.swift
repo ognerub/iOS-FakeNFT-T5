@@ -29,6 +29,7 @@ final class ProfileTableViewCell: UITableViewCell {
     //MARK: - Public functions
     func configureCell(name: String, count: Int?) {
         backgroundColor = .ypWhiteDay
+        selectionStyle = .none
         
         if let count = count {
             nameLabel.text = "\(name) (\(count))"
