@@ -93,12 +93,6 @@ final class ProfileViewController: UIViewController {
         
         setupView()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        tabBarController?.tabBar.isHidden = false
-    }
 }
 
 //MARK: - UITableViewDelegate
@@ -183,6 +177,12 @@ private extension ProfileViewController {
     }
     
     func fillTableCells() {
+        let favoriteNftsViewController = FavoriteNftsViewController()
+        favoriteNftsViewController.hidesBottomBarWhenPushed = true
+        
+        let myNftViewController = MyNftViewController()
+        myNftViewController.hidesBottomBarWhenPushed = true
+        
         tableCells.append(
             ProfileCellModel(
                 name: "Мои NFT",
@@ -190,7 +190,7 @@ private extension ProfileViewController {
                 action: { [weak self] in
                     guard let self = self else { return }
                     self.navigationController?.pushViewController(
-                        MyNftViewController(),
+                        myNftViewController,
                         animated: true
                     )
                 })
@@ -202,7 +202,7 @@ private extension ProfileViewController {
                 action: { [weak self] in
                     guard let self = self else { return }
                     self.navigationController?.pushViewController(
-                        FavoriteNftsViewController(),
+                        favoriteNftsViewController,
                         animated: true
                     )
                 })
@@ -225,6 +225,9 @@ private extension ProfileViewController {
     
     @objc
     func openWebView() {
-        navigationController?.pushViewController(WebViewViewController(), animated: true)
+        let webViewViewController = WebViewViewController()
+        webViewViewController.hidesBottomBarWhenPushed = true
+        
+        navigationController?.pushViewController(webViewViewController, animated: true)
     }
 }
