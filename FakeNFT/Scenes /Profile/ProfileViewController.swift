@@ -86,6 +86,10 @@ final class ProfileViewController: UIViewController {
     }()
     
     private var tableCells: [ProfileCellModel] = []
+    private var profileImage: UIImage?
+    private var profileName: String?
+    private var profileDescription: String?
+    private var profileWebSite: String?
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -220,7 +224,13 @@ private extension ProfileViewController {
     
     @objc
     func editProfile() {
-        present(EditProfileViewController(), animated: true)
+        let editProfileViewController = EditProfileViewController(
+            imageButton: avatarImageView.image?.alpha(0.6),
+            name: nameLabel.text,
+            description: bioTextView.text,
+            webSite: urlButton.titleLabel?.text
+        )
+        present(editProfileViewController, animated: true)
     }
     
     @objc

@@ -22,12 +22,10 @@ final class EditProfileViewController: UIViewController {
         return button
     }()
     private lazy var editPhotoButton: UIButton = {
-        let imageButton = UIImage(named: "Image1")?.alpha(0.6)
         
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.setBackgroundImage(imageButton, for: .normal)
         button.setTitle("Сменить \n фото", for: .normal)
         button.setTitleColor(.ypWhiteUniversal, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 10, weight: .medium)
@@ -110,6 +108,20 @@ final class EditProfileViewController: UIViewController {
         
         return textField
     }()
+    
+    //MARK: - Initialization
+    init(imageButton: UIImage?, name: String?, description: String?, webSite: String?) {
+        super.init(nibName: nil, bundle: nil)
+        
+        editPhotoButton.setBackgroundImage(imageButton, for: .normal)
+        nameTextField.text = name
+        descriptionTextField.text = description
+        urlTextField.text = webSite
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
