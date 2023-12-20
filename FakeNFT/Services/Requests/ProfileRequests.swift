@@ -18,4 +18,12 @@ struct PutProfileRequest: NetworkRequest {
         URL(string: "\(RequestConstants.baseURL)/api/v1/profile/1")
     }
     var httpMethod = HttpMethod.put
+    var dto: Encodable? {
+        profileDto
+    }
+    let profileDto: ProfileDto
+    
+    init(profile: ProfileUpdate) {
+        profileDto = ProfileDto(from: profile)
+    }
 }

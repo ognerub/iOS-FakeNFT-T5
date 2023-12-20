@@ -8,6 +8,7 @@
 import UIKit
 
 final class EditProfileViewController: UIViewController {
+    weak var delegate: ProfileViewControllerDelegate?
     
     //MARK: - Layout variables
     private lazy var closeButton: UIButton = {
@@ -21,22 +22,34 @@ final class EditProfileViewController: UIViewController {
         
         return button
     }()
-    private lazy var editPhotoButton: UIButton = {
+    private lazy var avatarImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         
+        imageView.layer.cornerRadius = 35
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        
+        return imageView
+    }()
+    private lazy var shadowView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.backgroundColor = .ypBackgroundUniversal
+        view.layer.cornerRadius = 35
+        
+        return view
+    }()
+    private lazy var changePhotoButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
         button.setTitle("Сменить \n фото", for: .normal)
-        button.setTitleColor(.ypWhiteUniversal, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 10, weight: .medium)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 10, weight: .medium)
         button.titleLabel?.numberOfLines = 2
         button.titleLabel?.textAlignment = .center
-        button.frame.size.width = 70
-        button.frame.size.height = 70
-        button.layer.cornerRadius = 35
-        button.layer.masksToBounds = false
         button.addTarget(self, action: #selector(changeAvatar), for: .touchUpInside)
-        button.backgroundColor = .black
         
         return button
     }()
@@ -109,14 +122,18 @@ final class EditProfileViewController: UIViewController {
         return textField
     }()
     
+    private var likes: [String]?
+    private let profileService = ProfileService.shared
+    
     //MARK: - Initialization
-    init(imageButton: UIImage?, name: String?, description: String?, webSite: String?) {
+    init(imageButton: UIImage?, name: String?, description: String?, webSite: String?, likes: [String]) {
         super.init(nibName: nil, bundle: nil)
         
-        editPhotoButton.setBackgroundImage(imageButton, for: .normal)
+        avatarImageView.image = imageButton
         nameTextField.text = name
         descriptionTextField.text = description
         urlTextField.text = webSite
+        self.likes = likes
     }
     
     required init?(coder: NSCoder) {
@@ -128,6 +145,11 @@ final class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         
         setupView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateProfile()
     }
 }
 
@@ -143,7 +165,10 @@ private extension EditProfileViewController {
     
     func addSubViews() {
         view.addSubview(closeButton)
-        view.addSubview(editPhotoButton)
+        view.addSubview(avatarImageView)
+        view.addSubview(shadowView)
+        view.addSubview(changePhotoButton)
+        
         view.addSubview(nameLabel)
         view.addSubview(nameTextField)
         view.addSubview(descriptionLabel)
@@ -157,12 +182,22 @@ private extension EditProfileViewController {
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            editPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            editPhotoButton.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 22),
-            editPhotoButton.heightAnchor.constraint(equalToConstant: 70),
-            editPhotoButton.widthAnchor.constraint(equalToConstant: 70),
+            avatarImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            avatarImageView.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 22),
+            avatarImageView.heightAnchor.constraint(equalToConstant: 70),
+            avatarImageView.widthAnchor.constraint(equalToConstant: 70),
             
-            nameLabel.topAnchor.constraint(equalTo: editPhotoButton.bottomAnchor, constant: 24),
+            shadowView.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
+            shadowView.trailingAnchor.constraint(equalTo: avatarImageView.trailingAnchor),
+            shadowView.topAnchor.constraint(equalTo: avatarImageView.topAnchor),
+            shadowView.bottomAnchor.constraint(equalTo: avatarImageView.bottomAnchor),
+            
+            changePhotoButton.leadingAnchor.constraint(equalTo: shadowView.leadingAnchor),
+            changePhotoButton.trailingAnchor.constraint(equalTo: shadowView.trailingAnchor),
+            changePhotoButton.topAnchor.constraint(equalTo: shadowView.topAnchor),
+            changePhotoButton.bottomAnchor.constraint(equalTo: shadowView.bottomAnchor),
+            
+            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 24),
             nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             nameLabel.widthAnchor.constraint(equalToConstant: 50),
             nameLabel.heightAnchor.constraint(equalToConstant: 28),
@@ -181,19 +216,19 @@ private extension EditProfileViewController {
             descriptionTextField.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             descriptionTextField.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
             descriptionTextField.heightAnchor.constraint(equalToConstant: 132),
-
+            
             urlLabel.topAnchor.constraint(equalTo: descriptionTextField.bottomAnchor, constant: 24),
             urlLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             urlLabel.widthAnchor.constraint(equalToConstant: 57),
             urlLabel.heightAnchor.constraint(equalToConstant: 28),
-
+            
             urlTextField.topAnchor.constraint(equalTo: urlLabel.bottomAnchor, constant: 8),
             urlTextField.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             urlTextField.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
             urlTextField.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
-
+    
     @objc
     func close() {
         dismiss(animated: true)
@@ -209,6 +244,41 @@ private extension EditProfileViewController {
     func addTapGestureToHideKeyboard() {
         let tapGesture = UITapGestureRecognizer(target: view, action: #selector(view.endEditing))
         view.addGestureRecognizer(tapGesture)
+    }
+    
+    func updateProfile() {
+        guard let likes = likes else { return }
+        let profileUpdate = ProfileUpdate(
+            name: nameTextField.text ?? "",
+            description: descriptionTextField.text,
+            website: urlTextField.text ?? "",
+            likes: likes
+        )
+        profileService.updateProfile(with: profileUpdate) { [weak self] result in
+            guard let self = self,
+                  let delegate = self.delegate else {
+                return
+            }
+            switch result {
+                case .success(_):
+                    delegate.updateProfile()
+                    //                    self.profileStorage.saveProfile(
+                    //                        ProfileModel(
+                    //                            name: profile.name,
+                    //                            avatar: profile.avatar,
+                    //                            description: profile.description,
+                    //                            website: profile.website,
+                    //                            nfts: profile.nfts,
+                    //                            likes: profile.likes,
+                    //                            id: profile.id
+                    //                        )
+                    //                    )
+                    //                    self.profileId = profile.id
+                    //                    UIBlockingProgressHUD.dismiss()
+                case .failure(let error):
+                    print(error)
+            }
+        }
     }
     
     @objc

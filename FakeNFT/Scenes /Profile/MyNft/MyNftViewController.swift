@@ -7,6 +7,10 @@
 
 import UIKit
 
+enum MyNftsDetailState {
+    case initial, loading, failed(Error), data([NftResult])
+}
+
 final class MyNftViewController: UIViewController {
     //MARK: - Layout variables
     private lazy var backButton: UIButton = {
@@ -65,7 +69,25 @@ final class MyNftViewController: UIViewController {
     }()
     
     //MARK: - Private variables
-    private let nfts: [String] = ["Lilo", "Spring", "April"]
+    private var nfts: [NftModel] = []
+    private var profileId: String?
+    private let nftService = NftServiceImpl.shared
+    var state = MyNftsDetailState.initial {
+        didSet {
+            stateDidChanged()
+        }
+    }
+    
+    //MARK: - Initialization
+    init(profileId: String?) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.profileId = profileId
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -89,7 +111,7 @@ extension MyNftViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configureCell(name: nfts[indexPath.row])
+        cell.configureCell(name: nfts[indexPath.row].name)
         
         return cell
     }
@@ -178,6 +200,74 @@ private extension MyNftViewController{
         })
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func stateDidChanged() {
+        switch state {
+            case .initial:
+                assertionFailure("Can't move to initial state")
+            case .loading:
+                UIBlockingProgressHUD.show()
+                fetchNfts(profileId: profileId)
+                UIBlockingProgressHUD.dismiss()
+            case .data(let nftResults):
+                for nftResult in nftResults {
+                    let nft = NftModel(
+                        createdAt: DateFormatter.defaultDateFormatter.date(from: nftResult.createdAt),
+                        name: nftResult.name,
+                        images: nftResult.images,
+                        rating: nftResult.rating,
+                        description: nftResult.description,
+                        price: nftResult.price,
+                        author: nftResult.author,
+                        id: nftResult.id
+                    )
+                    nfts.append(nft)
+                    //обновить collectionView
+                    UIBlockingProgressHUD.dismiss()
+                }
+                
+            case .failed(let error):
+                UIBlockingProgressHUD.dismiss()
+                assertionFailure("Error: \(error)")
+        }
+    }
+    
+    func fetchNfts(profileId: String?) {
+        guard let profileId = profileId,
+              let profile = ProfileStorageImpl.shared.getProfile(id: profileId) else {
+            UIBlockingProgressHUD.dismiss()
+            return
+        }
+        
+        let nftsId = [
+            "739e293c-1067-43e5-8f1d-4377e744ddde",
+            "77c9aa30-f07a-4bed-886b-dd41051fade2",
+            "ca34d35a-4507-47d9-9312-5ea7053994c0",
+            "739e293c-1067-43e5-8f1d-4377e744ddde"
+        ]//profile.nfts
+            
+        var fetchedNFTs: [NftResult] = []
+//        let group = DispatchGroup()
+//        
+//        for nftId in nftsId {
+//            group.enter()
+//            
+//            nftService.loadNft(id: nftId) { (result) in
+//                switch result {
+//                    case .success(let nft):
+//                        fetchedNFTs.append(nft)
+//                    case .failure(let error):
+//                        self.state = .failed(error)
+//                        print("Failed to fetch NFT with ID \(nftId): \(error)")
+//                }
+//                group.leave()
+//            }
+//        }
+//        group.notify(queue: .main) { [weak self] in
+//            guard let self = self else { return }
+//            self.state = .data(fetchedNFTs)
+//        }
     }
     
     @objc

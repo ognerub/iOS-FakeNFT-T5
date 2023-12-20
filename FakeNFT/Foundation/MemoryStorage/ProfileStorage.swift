@@ -13,9 +13,14 @@ protocol ProfileStorage: AnyObject {
 }
 
 final class ProfileStorageImpl: ProfileStorage {
+    static let shared = ProfileStorageImpl()
+    
     private var storage: [String:ProfileModel] = [:]
     
     private let syncQueue = DispatchQueue(label: "sync-profile-queue")
+    
+    //MARK: - Initialization
+    private init() { }
     
     func saveProfile(_ profile: ProfileModel) {
         syncQueue.async { [weak self] in

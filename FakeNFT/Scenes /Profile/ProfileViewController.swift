@@ -6,6 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
+
+protocol ProfileViewControllerDelegate: AnyObject {
+    func updateProfile()
+}
 
 final class ProfileViewController: UIViewController {
     
@@ -22,7 +27,7 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "Image1"))
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 35
         imageView.clipsToBounds = true
@@ -79,8 +84,9 @@ final class ProfileViewController: UIViewController {
     }()
     
     private var tableCells: [ProfileCellModel] = []
-    private var profileService: ProfileService?
-    private var profileStorage: ProfileStorage = ProfileStorageImpl()
+    private let profileService = ProfileService.shared
+    private var profileStorage: ProfileStorage = ProfileStorageImpl.shared
+    private var profileId: String?
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -121,13 +127,41 @@ extension ProfileViewController: UITableViewDataSource {
     }
 }
 
+//MARK: - ProfileViewControllerDelegate
+extension ProfileViewController: ProfileViewControllerDelegate {
+    func updateProfile() {
+        UIBlockingProgressHUD.show()
+        profileService.getProfile() { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+                case .success(let profile):
+                    self.profileStorage.saveProfile(
+                        ProfileModel(
+                            name: profile.name,
+                            avatar: profile.avatar,
+                            description: profile.description,
+                            website: profile.website,
+                            nfts: profile.nfts,
+                            likes: profile.likes,
+                            id: profile.id
+                        )
+                    )
+                    self.profileId = profile.id
+                    updateLayout()
+                    UIBlockingProgressHUD.dismiss()
+                case .failure(let error):
+                    print(error)
+            }
+        }
+    }
+}
+
 //MARK: - Private functions
 private extension ProfileViewController {
     func setupView() {
         view.backgroundColor = .ypWhiteDay
         navigationController?.navigationBar.isHidden = true
         
-        profileService = ProfileService(networkClient: DefaultNetworkClient(), storage: profileStorage)
         updateProfile()
         
         fillTableCells(nftsCount: 0, likesCount: 0)
@@ -178,9 +212,6 @@ private extension ProfileViewController {
         let favoriteNftsViewController = FavoriteNftsViewController()
         favoriteNftsViewController.hidesBottomBarWhenPushed = true
         
-        let myNftViewController = MyNftViewController()
-        myNftViewController.hidesBottomBarWhenPushed = true
-        
         tableCells.removeAll()
         tableCells.append(
             ProfileCellModel(
@@ -188,6 +219,9 @@ private extension ProfileViewController {
                 count: nftsCount,
                 action: { [weak self] in
                     guard let self = self else { return }
+                    let myNftViewController = MyNftViewController(profileId: profileId)
+                    myNftViewController.state = .loading
+                    myNftViewController.hidesBottomBarWhenPushed = true
                     self.navigationController?.pushViewController(
                         myNftViewController,
                         animated: true
@@ -216,38 +250,18 @@ private extension ProfileViewController {
                 })
         )
     }
-     
-    func updateProfile() {
-        UIBlockingProgressHUD.show()
-        guard let profileService = profileService else { return }
-        profileService.getProfile() { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-                case .success(let profile):
-                    self.profileStorage.saveProfile(
-                        ProfileModel(
-                            name: profile.name,
-                            avatar: profile.avatar,
-                            description: profile.description,
-                            website: profile.website,
-                            nfts: profile.nfts,
-                            likes: profile.likes,
-                            id: profile.id
-                        )
-                    )
-                    updateLayout(id: profile.id)
-                    UIBlockingProgressHUD.dismiss()
-                case .failure(let error):
-                    print(error)
-            }
-        }
-    }
     
-    func updateLayout(id: String) {
+    func updateLayout() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self,
-                  let profile = self.profileStorage.getProfile(id: id) else {
+                  let profileId = profileId,
+                  let profile = self.profileStorage.getProfile(id: profileId) else {
                 return
+            }
+            if let avatar = profile.avatar {
+                let processor = RoundCornerImageProcessor(cornerRadius: 35)
+                self.avatarImageView.kf.indicatorType = .activity
+                self.avatarImageView.kf.setImage(with: URL(string: avatar), options: [.processor(processor)])
             }
             self.nameLabel.text = profile.name
             self.bioTextView.text = profile.description
@@ -259,12 +273,19 @@ private extension ProfileViewController {
     
     @objc
     func editProfile() {
+        guard let profileId = profileId,
+              let profile = profileStorage.getProfile(id: profileId) else {
+            return
+        }
+        
         let editProfileViewController = EditProfileViewController(
             imageButton: avatarImageView.image?.alpha(0.6),
             name: nameLabel.text,
             description: bioTextView.text,
-            webSite: urlButton.titleLabel?.text
+            webSite: urlButton.titleLabel?.text,
+            likes: profile.likes
         )
+        editProfileViewController.delegate = self
         present(editProfileViewController, animated: true)
     }
     
