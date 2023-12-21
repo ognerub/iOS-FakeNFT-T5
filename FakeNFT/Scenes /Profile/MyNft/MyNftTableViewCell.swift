@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class MyNftTableViewCell: UITableViewCell {
     //MARK: - Layout variables
@@ -18,7 +19,6 @@ final class MyNftTableViewCell: UITableViewCell {
     }()
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .red
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
@@ -58,7 +58,6 @@ final class MyNftTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 13, weight: .regular)
         label.textColor = .ypBlackDay
-        label.text = "от John Doe"
         
         return label
     }()
@@ -76,16 +75,23 @@ final class MyNftTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .ypBlackDay
-        label.text = "1,78 ETH"
         
         return label
     }()
     
     //MARK: - Public functions
-    func configureCell(name: String) {
+    func configureCell(nft: NftModel) {
         backgroundColor = .ypWhiteDay
         selectionStyle = .none
-        nameLabel.text = name
+        
+        if let urlString = nft.images.first {
+            nftImageView.kf.setImage(with: URL(string: urlString))
+        }
+        
+        nameLabel.text = nft.name
+        authorLabel.text = nft.author
+        costLabel.text = "\(nft.price) ETH"
+        changeRating(nft.rating)
         
         addSubViews()
         configureConstraints()
@@ -142,6 +148,23 @@ private extension MyNftTableViewCell {
             authorLabel.topAnchor.constraint(equalTo: ratingImageView.bottomAnchor, constant: 4)
             
         ])
+    }
+    
+    func changeRating(_ rating: Int) {
+        switch rating {
+            case 1:
+                ratingImageView.image = UIImage(named: "stars1")
+            case 2:
+                ratingImageView.image = UIImage(named: "stars2")
+            case 3:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 4:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 5:
+                ratingImageView.image = UIImage(named: "stars5")
+            default:
+                ratingImageView.image = UIImage(named: "stars0")
+        }
     }
     
     @objc

@@ -111,7 +111,7 @@ extension MyNftViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configureCell(name: nfts[indexPath.row].name)
+        cell.configureCell(nft: nfts[indexPath.row])
         
         return cell
     }
@@ -130,14 +130,17 @@ private extension MyNftViewController{
     func setupView() {
         view.backgroundColor = .ypWhiteDay
         
+        changeElementsVisibility()
+        addSubViews()
+        configureConstraints()
+    }
+    
+    func changeElementsVisibility() {
         let showHideElements = nfts.isEmpty
         emptyNftsLabel.isHidden = !showHideElements
         filtersButton.isHidden = showHideElements
         headerLabel.isHidden = showHideElements
         tableView.isHidden = showHideElements
-        
-        addSubViews()
-        configureConstraints()
     }
     
     func addSubViews() {
@@ -209,7 +212,6 @@ private extension MyNftViewController{
             case .loading:
                 UIBlockingProgressHUD.show()
                 fetchNfts(profileId: profileId)
-                UIBlockingProgressHUD.dismiss()
             case .data(let nftResults):
                 for nftResult in nftResults {
                     let nft = NftModel(
@@ -223,7 +225,8 @@ private extension MyNftViewController{
                         id: nftResult.id
                     )
                     nfts.append(nft)
-                    //обновить collectionView
+                    changeElementsVisibility()
+                    tableView.reloadData()
                     UIBlockingProgressHUD.dismiss()
                 }
                 
@@ -240,34 +243,37 @@ private extension MyNftViewController{
             return
         }
         
+//        let nftsId = profile.nfts
         let nftsId = [
             "739e293c-1067-43e5-8f1d-4377e744ddde",
             "77c9aa30-f07a-4bed-886b-dd41051fade2",
-            "ca34d35a-4507-47d9-9312-5ea7053994c0",
-            "739e293c-1067-43e5-8f1d-4377e744ddde"
-        ]//profile.nfts
+            "ca34d35a-4507-47d9-9312-5ea7053994c0"
+        ]
+        if nftsId.isEmpty {
+            UIBlockingProgressHUD.dismiss()
+            return
+        }
             
         var fetchedNFTs: [NftResult] = []
-//        let group = DispatchGroup()
-//        
-//        for nftId in nftsId {
-//            group.enter()
-//            
-//            nftService.loadNft(id: nftId) { (result) in
-//                switch result {
-//                    case .success(let nft):
-//                        fetchedNFTs.append(nft)
-//                    case .failure(let error):
-//                        self.state = .failed(error)
-//                        print("Failed to fetch NFT with ID \(nftId): \(error)")
-//                }
-//                group.leave()
-//            }
-//        }
-//        group.notify(queue: .main) { [weak self] in
-//            guard let self = self else { return }
-//            self.state = .data(fetchedNFTs)
-//        }
+        let group = DispatchGroup()
+        
+        for nftId in nftsId {
+            group.enter()
+            
+            nftService.loadNft(id: nftId) { (result) in
+                switch result {
+                    case .success(let nft):
+                        fetchedNFTs.append(nft)
+                    case .failure(let error):
+                        self.state = .failed(error)
+                        print("Failed to fetch NFT with ID \(nftId): \(error)")
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: .main) {
+            self.state = .data(fetchedNFTs)
+        }
     }
     
     @objc
