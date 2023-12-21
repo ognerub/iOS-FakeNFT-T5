@@ -150,6 +150,7 @@ extension ProfileViewController: ProfileViewControllerDelegate {
                     updateLayout()
                     UIBlockingProgressHUD.dismiss()
                 case .failure(let error):
+                    UIBlockingProgressHUD.dismiss()
                     print(error)
             }
         }

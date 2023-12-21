@@ -243,12 +243,8 @@ private extension MyNftViewController{
             return
         }
         
-//        let nftsId = profile.nfts
-        let nftsId = [
-            "739e293c-1067-43e5-8f1d-4377e744ddde",
-            "77c9aa30-f07a-4bed-886b-dd41051fade2",
-            "ca34d35a-4507-47d9-9312-5ea7053994c0"
-        ]
+        // Вместо profile.nfts можно подставить массив с моковыми id для проверки загрузки
+        let nftsId = profile.nfts
         if nftsId.isEmpty {
             UIBlockingProgressHUD.dismiss()
             return

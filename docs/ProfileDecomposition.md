@@ -26,11 +26,11 @@
 #### Логика
 - Добавить автоматическое заполнение полей редактирования профиля (est: 1 hours; fact: 1 hours).
 - Добавить загрузку информации профиля с сервера (est: 5 hours; fact: 5 hours).
-- Добавить обновление данных профиля на сервере (est: 3 hours; fact: 5 hours).
-- Добавить загрузку изображения профиля (est: 2 hours; fact: 1 hours).
-- Добавить загрузку моих NFT с сервера (est: 5 hours; fact: x hours).
+- Добавить обновление данных профиля на сервере (est: 3 hours; fact: 6 hours).
+- Добавить загрузку изображения профиля (est: 2 hours; fact: 2 hours).
+- Добавить загрузку моих NFT с сервера (est: 5 hours; fact: 3 hours).
 
-`Total:` est: 16 hours; fact: x min.
+`Total:` est: 16 hours; fact: 17 hours.
 
 ## Module 3:
 

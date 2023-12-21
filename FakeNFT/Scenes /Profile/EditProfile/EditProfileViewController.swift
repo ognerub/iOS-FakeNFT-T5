@@ -262,19 +262,6 @@ private extension EditProfileViewController {
             switch result {
                 case .success(_):
                     delegate.updateProfile()
-                    //                    self.profileStorage.saveProfile(
-                    //                        ProfileModel(
-                    //                            name: profile.name,
-                    //                            avatar: profile.avatar,
-                    //                            description: profile.description,
-                    //                            website: profile.website,
-                    //                            nfts: profile.nfts,
-                    //                            likes: profile.likes,
-                    //                            id: profile.id
-                    //                        )
-                    //                    )
-                    //                    self.profileId = profile.id
-                    //                    UIBlockingProgressHUD.dismiss()
                 case .failure(let error):
                     print(error)
             }
