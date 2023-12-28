@@ -89,9 +89,10 @@ final class AuthorizationViewController: UIViewController {
     // MARK: - Objective-C functions
     @objc
     private func didTapLoginButton() {
-        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration of switchToTabBarController") }
-        let tabBarController = TabBarController()
-        window.rootViewController = tabBarController
+        ///uncomment code below to change root view controller on TabBarViewController()
+//        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration of switchToTabBarController") }
+//        let tabBarController = TabBarController()
+//        window.rootViewController = tabBarController
     }
     
     @objc func didTapForgotPassword() {
