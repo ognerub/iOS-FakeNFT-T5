@@ -57,12 +57,25 @@ final class FavoriteNftsViewController: UIViewController {
     }()
     
     //MARK: - Private variables
-    private let nfts: [String] = [
-        "Lilo", "Spring", "April",
-        "Archie", "Pixi", "Melissa",
-        "Lilo", "Spring", "April",
-        "Archie", "Pixi", "Melissa"
-    ]
+    private var nfts: [NftModel] = []
+    private let nftService = NftServiceImpl.shared
+    private var profileId: String?
+    var state = MyNftsDetailState.initial {
+        didSet {
+            stateDidChanged()
+        }
+    }
+    
+    //MARK: - Initialization
+    init(profileId: String?) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.profileId = profileId
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -89,7 +102,7 @@ extension FavoriteNftsViewController: UICollectionViewDataSource {
         ) as? FavoriteNftsCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
         
-        cell.configureCell(name: nfts[indexPath.row])
+        cell.configureCell(nft: nfts[indexPath.row])
         
         return cell
     }
@@ -119,10 +132,7 @@ private extension FavoriteNftsViewController {
     func setupView() {
         view.backgroundColor = .ypWhiteDay
         
-        let showHideElements = nfts.isEmpty
-        emptyNftsLabel.isHidden = !showHideElements
-        nftCollectionView.isHidden = showHideElements
-        headerLabel.isHidden = showHideElements
+        changeElementsVisibility()
         
         addSubViews()
         configureConstraints()
@@ -151,6 +161,79 @@ private extension FavoriteNftsViewController {
             nftCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             nftCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    func stateDidChanged() {
+        switch state {
+            case .initial:
+                assertionFailure("Can't move to initial state")
+            case .loading:
+                UIBlockingProgressHUD.show()
+                fetchNfts(profileId: profileId)
+            case .data(let nftResults):
+                for nftResult in nftResults {
+                    let nft = NftModel(
+                        createdAt: DateFormatter.defaultDateFormatter.date(from: nftResult.createdAt),
+                        name: nftResult.name,
+                        images: nftResult.images,
+                        rating: nftResult.rating,
+                        description: nftResult.description,
+                        price: nftResult.price,
+                        author: nftResult.author,
+                        id: nftResult.id
+                    )
+                    nfts.append(nft)
+                    changeElementsVisibility()
+                    nftCollectionView.reloadData()
+                    UIBlockingProgressHUD.dismiss()
+                }
+                
+            case .failed(let error):
+                UIBlockingProgressHUD.dismiss()
+                assertionFailure("Error: \(error)")
+        }
+    }
+    
+    func fetchNfts(profileId: String?) {
+        guard let profileId = profileId,
+              let profile = ProfileStorageImpl.shared.getProfile(id: profileId) else {
+            UIBlockingProgressHUD.dismiss()
+            return
+        }
+        
+        let nftsId = profile.likes
+        if nftsId.isEmpty {
+            UIBlockingProgressHUD.dismiss()
+            return
+        }
+        
+        var fetchedNFTs: [NftResult] = []
+        let group = DispatchGroup()
+        
+        for nftId in nftsId {
+            group.enter()
+            
+            nftService.loadNft(id: nftId) { (result) in
+                switch result {
+                    case .success(let nft):
+                        fetchedNFTs.append(nft)
+                    case .failure(let error):
+                        self.state = .failed(error)
+                        print("Failed to fetch NFT with ID \(nftId): \(error)")
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: .main) {
+            self.state = .data(fetchedNFTs)
+        }
+    }
+    
+    func changeElementsVisibility() {
+        let showHideElements = nfts.isEmpty
+        emptyNftsLabel.isHidden = !showHideElements
+        nftCollectionView.isHidden = showHideElements
+        headerLabel.isHidden = showHideElements
     }
     
     @objc

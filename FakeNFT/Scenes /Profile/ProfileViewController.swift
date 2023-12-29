@@ -210,9 +210,6 @@ private extension ProfileViewController {
     }
     
     func fillTableCells(nftsCount: Int, likesCount: Int) {
-        let favoriteNftsViewController = FavoriteNftsViewController()
-        favoriteNftsViewController.hidesBottomBarWhenPushed = true
-        
         tableCells.removeAll()
         tableCells.append(
             ProfileCellModel(
@@ -235,6 +232,11 @@ private extension ProfileViewController {
                 count: likesCount,
                 action: { [weak self] in
                     guard let self = self else { return }
+                    
+                    let favoriteNftsViewController = FavoriteNftsViewController(profileId: profileId)
+                    favoriteNftsViewController.state = .loading
+                    favoriteNftsViewController.hidesBottomBarWhenPushed = true
+                    
                     self.navigationController?.pushViewController(
                         favoriteNftsViewController,
                         animated: true

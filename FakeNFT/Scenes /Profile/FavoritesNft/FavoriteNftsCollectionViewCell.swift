@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
     static let cellName = "favoriteNftsCell"
@@ -13,7 +14,7 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
     //MARK: - Layout variables
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .red
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
@@ -33,7 +34,7 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         return button
     }()
     private lazy var ratingImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "stars3"))
+        let imageView = UIImageView()
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
@@ -53,16 +54,20 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 15, weight: .regular)
         label.textColor = .ypBlackDay
-        label.text = "1,78 ETH"
         
         return label
     }()
     
     //MARK: - Main function
-    func configureCell(name: String) {
+    func configureCell(nft: NftModel) {
         backgroundColor = .ypWhiteDay
         
-        nameLabel.text = name
+        if let urlString = nft.images.first {
+            nftImageView.kf.setImage(with: URL(string: urlString))
+        }
+        nameLabel.text = nft.name
+        costLabel.text = "\(nft.price) ETH"
+        changeRating(nft.rating)
         
         addSubViews()
         configureConstraints()
@@ -101,6 +106,33 @@ private extension FavoriteNftsCollectionViewCell {
             costLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
             costLabel.heightAnchor.constraint(equalToConstant: 20)
         ])
+    }
+    
+    func changeRating(_ rating: Int) {
+        switch rating {
+            case 1:
+                ratingImageView.image = UIImage(named: "stars1")
+            case 2:
+                ratingImageView.image = UIImage(named: "stars1")
+            case 3:
+                ratingImageView.image = UIImage(named: "stars2")
+            case 4:
+                ratingImageView.image = UIImage(named: "stars2")
+            case 5:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 6:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 7:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 8:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 9:
+                ratingImageView.image = UIImage(named: "stars5")
+            case 10:
+                ratingImageView.image = UIImage(named: "stars5")
+            default:
+                ratingImageView.image = UIImage(named: "stars0")
+        }
     }
     
     @objc
