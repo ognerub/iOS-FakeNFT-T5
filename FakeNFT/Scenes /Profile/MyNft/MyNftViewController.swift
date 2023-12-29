@@ -182,19 +182,32 @@ private extension MyNftViewController{
             message: nil,
             preferredStyle: .actionSheet
         )
-        alert.addAction(UIAlertAction(title: "По цене",
-                                      style: .default) { _ in
-
+        alert.addAction(UIAlertAction(
+            title: "По цене",
+            style: .default
+        ) { [weak self] _ in
+            
+            guard let self = self else { return }
+            self.nfts.sort(by: { $0.price < $1.price })
+            self.tableView.reloadData()
         })
         alert.addAction(UIAlertAction(
             title: "По рейтингу",
             style: .default
-        ) { _ in
+        ) { [weak self] _ in
+            
+            guard let self = self else { return }
+            self.nfts.sort(by: { $0.rating < $1.rating })
+            self.tableView.reloadData()
         })
         alert.addAction(UIAlertAction(
             title: "По названию",
             style: .default
-        ) { _ in
+        ) { [weak self] _ in
+            
+            guard let self = self else { return }
+            self.nfts.sort(by: { $0.name < $1.name})
+            self.tableView.reloadData()
         })
         alert.addAction(UIAlertAction(
             title: "Закрыть",
@@ -244,7 +257,13 @@ private extension MyNftViewController{
         }
         
         // Вместо profile.nfts можно подставить массив с моковыми id для проверки загрузки
-        let nftsId = profile.nfts
+        let nftsId = [
+            "739e293c-1067-43e5-8f1d-4377e744ddde",
+            "77c9aa30-f07a-4bed-886b-dd41051fade2",
+            "d6a02bd1-1255-46cd-815b-656174c1d9c0",
+            "594aaf01-5962-4ab7-a6b5-470ea37beb93",
+        ]
+//        let nftsId = profile.nfts
         if nftsId.isEmpty {
             UIBlockingProgressHUD.dismiss()
             return

@@ -155,12 +155,22 @@ private extension MyNftTableViewCell {
             case 1:
                 ratingImageView.image = UIImage(named: "stars1")
             case 2:
-                ratingImageView.image = UIImage(named: "stars2")
+                ratingImageView.image = UIImage(named: "stars1")
             case 3:
-                ratingImageView.image = UIImage(named: "stars3")
+                ratingImageView.image = UIImage(named: "stars2")
             case 4:
-                ratingImageView.image = UIImage(named: "stars4")
+                ratingImageView.image = UIImage(named: "stars2")
             case 5:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 6:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 7:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 8:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 9:
+                ratingImageView.image = UIImage(named: "stars5")
+            case 10:
                 ratingImageView.image = UIImage(named: "stars5")
             default:
                 ratingImageView.image = UIImage(named: "stars0")
