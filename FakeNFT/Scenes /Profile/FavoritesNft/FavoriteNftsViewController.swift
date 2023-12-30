@@ -7,7 +7,19 @@
 
 import UIKit
 
+protocol FavoriteNftsViewControllerDelegate: AnyObject {
+    func changeLike(nftId: String)
+}
+
 final class FavoriteNftsViewController: UIViewController {
+    //MARK: - Public variables
+    weak var delegate: ProfileViewControllerDelegate?
+    var state = MyNftsDetailState.initial {
+        didSet {
+            stateDidChanged()
+        }
+    }
+    
     //MARK: - Layout variables
     private lazy var backButton: UIButton = {
         let imageButton = UIImage(named: "backward")
@@ -60,11 +72,6 @@ final class FavoriteNftsViewController: UIViewController {
     private var nfts: [NftModel] = []
     private let nftService = NftServiceImpl.shared
     private var profileId: String?
-    var state = MyNftsDetailState.initial {
-        didSet {
-            stateDidChanged()
-        }
-    }
     
     //MARK: - Initialization
     init(profileId: String?) {
@@ -102,6 +109,7 @@ extension FavoriteNftsViewController: UICollectionViewDataSource {
         ) as? FavoriteNftsCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
         
+        cell.delegate = self
         cell.configureCell(nft: nfts[indexPath.row])
         
         return cell
@@ -124,6 +132,18 @@ extension FavoriteNftsViewController: UICollectionViewDelegateFlowLayout {
 extension FavoriteNftsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+    }
+}
+
+// MARK: - FavoriteNftsViewControllerDelegate
+extension FavoriteNftsViewController: FavoriteNftsViewControllerDelegate {
+    func changeLike(nftId: String) {
+        guard let delegate = delegate else { return }
+        nfts = nfts.filter { nft in
+            nft.id != nftId
+        }
+        nftCollectionView.reloadData()
+        delegate.changeLike(nftId: nftId, liked: true)
     }
 }
 

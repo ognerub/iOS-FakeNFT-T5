@@ -9,7 +9,9 @@ import UIKit
 import Kingfisher
 
 final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
+    //MARK: - Public variables
     static let cellName = "favoriteNftsCell"
+    weak var delegate: FavoriteNftsViewControllerDelegate?
     
     //MARK: - Layout variables
     private lazy var nftImageView: UIImageView = {
@@ -22,7 +24,7 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     private lazy var likeButton: UIButton = {
-        let imageButton = UIImage(named: "No active")
+        let imageButton = UIImage(named: "Active")
         
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -58,9 +60,14 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    //MARK: - Private variables
+    private var nftId: String?
+    
     //MARK: - Main function
     func configureCell(nft: NftModel) {
         backgroundColor = .ypWhiteDay
+        
+        nftId = nft.id
         
         if let urlString = nft.images.first {
             nftImageView.kf.setImage(with: URL(string: urlString))
@@ -137,6 +144,10 @@ private extension FavoriteNftsCollectionViewCell {
     
     @objc
     func changeLike() {
-        
+        guard let delegate = delegate,
+              let nftId = nftId else {
+            return
+        }
+        delegate.changeLike(nftId: nftId)
     }
 }

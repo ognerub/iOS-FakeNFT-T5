@@ -36,7 +36,7 @@
 
 #### Логика
 - Добавить логику сортировки на экран мои NFT (est: 3 hours; fact: 1 hours).
-- Добавить реализацию лайков (est: 5 hours; fact: x hours).
+- Добавить реализацию лайков (est: 5 hours; fact: 5 hours).
 - Добавить загрузку избранных с сервера (est: 5 hours; fact: 2 hours).
 - Ревью всех своих экранов (est: 2 hours; fact: x hours).
 

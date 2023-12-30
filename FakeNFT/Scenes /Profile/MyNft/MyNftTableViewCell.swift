@@ -9,6 +9,9 @@ import UIKit
 import Kingfisher
 
 final class MyNftTableViewCell: UITableViewCell {
+    //MARK: - Public variables
+    weak var delegate: MyNftViewControllerDelegate?
+    
     //MARK: - Layout variables
     private lazy var uiView: UIView = {
         let view = UIView()
@@ -50,7 +53,7 @@ final class MyNftTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = .ypBlackDay
-
+        
         return label
     }()
     private lazy var authorLabel: UILabel = {
@@ -79,13 +82,27 @@ final class MyNftTableViewCell: UITableViewCell {
         return label
     }()
     
+    private var nftId: String?
+    private var isLiked: Bool?
+    
     //MARK: - Public functions
-    func configureCell(nft: NftModel) {
+    func configureCell(nft: NftModel, isLiked: Bool?) {
         backgroundColor = .ypWhiteDay
         selectionStyle = .none
         
+        guard let isLiked = isLiked else { return }
+        self.isLiked = isLiked
+        
+        nftId = nft.id
+        
         if let urlString = nft.images.first {
             nftImageView.kf.setImage(with: URL(string: urlString))
+        }
+        
+        if isLiked {
+            likeButton.setImage(UIImage(named: "Active"), for: .normal)
+        } else {
+            likeButton.setImage(UIImage(named: "No active"), for: .normal)
         }
         
         nameLabel.text = nft.name
@@ -122,7 +139,7 @@ private extension MyNftTableViewCell {
             nftImageView.topAnchor.constraint(equalTo: uiView.topAnchor),
             nftImageView.bottomAnchor.constraint(equalTo: uiView.bottomAnchor),
             nftImageView.widthAnchor.constraint(equalToConstant: 108),
-
+            
             likeButton.trailingAnchor.constraint(equalTo: nftImageView.trailingAnchor),
             likeButton.topAnchor.constraint(equalTo: nftImageView.topAnchor),
             
@@ -179,6 +196,11 @@ private extension MyNftTableViewCell {
     
     @objc
     func changeLike() {
-    
+        guard let delegate = delegate,
+              let nftId = nftId,
+              let isLiked = isLiked else {
+            return
+        }
+        delegate.changeLike(nftId: nftId, liked: isLiked)
     }
 }
