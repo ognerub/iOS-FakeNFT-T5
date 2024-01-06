@@ -10,6 +10,7 @@ import Kingfisher
 
 protocol ProfileViewControllerDelegate: AnyObject {
     func updateProfile()
+    func changeLike(nftId: String, liked: Bool)
 }
 
 final class ProfileViewController: UIViewController {
@@ -155,6 +156,41 @@ extension ProfileViewController: ProfileViewControllerDelegate {
             }
         }
     }
+    
+    func changeLike(nftId: String, liked: Bool) {
+        guard let profileId = profileId,
+              let profile = profileStorage.getProfile(id: profileId) else {
+            return
+        }
+        
+        var likes = profile.likes
+        if liked {
+            likes = likes.filter { id in
+                id != nftId
+            }
+        } else {
+            likes.append(nftId)
+        }
+        guard let profileDescription = profile.description,
+              let profileWebsite = profile.website else {
+            return
+        }
+        let profileUpdate = ProfileUpdate(
+            name: profile.name,
+            description: profileDescription,
+            website: profileWebsite,
+            likes: likes
+        )
+        profileService.updateProfile(with: profileUpdate) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+                case .success(_):
+                    self.updateProfile()
+                case .failure(let error):
+                    print(error)
+            }
+        }
+    }
 }
 
 //MARK: - Private functions
@@ -210,9 +246,6 @@ private extension ProfileViewController {
     }
     
     func fillTableCells(nftsCount: Int, likesCount: Int) {
-        let favoriteNftsViewController = FavoriteNftsViewController()
-        favoriteNftsViewController.hidesBottomBarWhenPushed = true
-        
         tableCells.removeAll()
         tableCells.append(
             ProfileCellModel(
@@ -221,6 +254,7 @@ private extension ProfileViewController {
                 action: { [weak self] in
                     guard let self = self else { return }
                     let myNftViewController = MyNftViewController(profileId: profileId)
+                    myNftViewController.delegate = self
                     myNftViewController.state = .loading
                     myNftViewController.hidesBottomBarWhenPushed = true
                     self.navigationController?.pushViewController(
@@ -235,6 +269,12 @@ private extension ProfileViewController {
                 count: likesCount,
                 action: { [weak self] in
                     guard let self = self else { return }
+                    
+                    let favoriteNftsViewController = FavoriteNftsViewController(profileId: profileId)
+                    favoriteNftsViewController.delegate = self
+                    favoriteNftsViewController.state = .loading
+                    favoriteNftsViewController.hidesBottomBarWhenPushed = true
+                    
                     self.navigationController?.pushViewController(
                         favoriteNftsViewController,
                         animated: true

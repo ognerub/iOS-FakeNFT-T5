@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
+    //MARK: - Public variables
     static let cellName = "favoriteNftsCell"
+    weak var delegate: FavoriteNftsViewControllerDelegate?
     
     //MARK: - Layout variables
     private lazy var nftImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .red
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
@@ -21,7 +24,7 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     private lazy var likeButton: UIButton = {
-        let imageButton = UIImage(named: "No active")
+        let imageButton = UIImage(named: "Active")
         
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -33,7 +36,7 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         return button
     }()
     private lazy var ratingImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "stars3"))
+        let imageView = UIImageView()
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
@@ -53,16 +56,25 @@ final class FavoriteNftsCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 15, weight: .regular)
         label.textColor = .ypBlackDay
-        label.text = "1,78 ETH"
         
         return label
     }()
     
+    //MARK: - Private variables
+    private var nftId: String?
+    
     //MARK: - Main function
-    func configureCell(name: String) {
+    func configureCell(nft: NftModel) {
         backgroundColor = .ypWhiteDay
         
-        nameLabel.text = name
+        nftId = nft.id
+        
+        if let urlString = nft.images.first {
+            nftImageView.kf.setImage(with: URL(string: urlString))
+        }
+        nameLabel.text = nft.name
+        costLabel.text = "\(nft.price) ETH"
+        changeRating(nft.rating)
         
         addSubViews()
         configureConstraints()
@@ -103,8 +115,39 @@ private extension FavoriteNftsCollectionViewCell {
         ])
     }
     
+    func changeRating(_ rating: Int) {
+        switch rating {
+            case 1:
+                ratingImageView.image = UIImage(named: "stars1")
+            case 2:
+                ratingImageView.image = UIImage(named: "stars1")
+            case 3:
+                ratingImageView.image = UIImage(named: "stars2")
+            case 4:
+                ratingImageView.image = UIImage(named: "stars2")
+            case 5:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 6:
+                ratingImageView.image = UIImage(named: "stars3")
+            case 7:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 8:
+                ratingImageView.image = UIImage(named: "stars4")
+            case 9:
+                ratingImageView.image = UIImage(named: "stars5")
+            case 10:
+                ratingImageView.image = UIImage(named: "stars5")
+            default:
+                ratingImageView.image = UIImage(named: "stars0")
+        }
+    }
+    
     @objc
     func changeLike() {
-        
+        guard let delegate = delegate,
+              let nftId = nftId else {
+            return
+        }
+        delegate.changeLike(nftId: nftId)
     }
 }

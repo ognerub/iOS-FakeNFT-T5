@@ -7,11 +7,23 @@
 
 import UIKit
 
+protocol MyNftViewControllerDelegate: AnyObject {
+    func changeLike(nftId: String, liked: Bool)
+}
+
 enum MyNftsDetailState {
     case initial, loading, failed(Error), data([NftResult])
 }
 
 final class MyNftViewController: UIViewController {
+    //MARK: - Public variables
+    weak var delegate: ProfileViewControllerDelegate?
+    var state = MyNftsDetailState.initial {
+        didSet {
+            stateDidChanged()
+        }
+    }
+    
     //MARK: - Layout variables
     private lazy var backButton: UIButton = {
         let imageButton = UIImage(named: "backward")
@@ -70,13 +82,9 @@ final class MyNftViewController: UIViewController {
     
     //MARK: - Private variables
     private var nfts: [NftModel] = []
+    private var likes: [String] = []
     private var profileId: String?
     private let nftService = NftServiceImpl.shared
-    var state = MyNftsDetailState.initial {
-        didSet {
-            stateDidChanged()
-        }
-    }
     
     //MARK: - Initialization
     init(profileId: String?) {
@@ -111,7 +119,11 @@ extension MyNftViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configureCell(nft: nfts[indexPath.row])
+        cell.delegate = self
+        let isLiked = likes.contains { id in
+            id == nfts[indexPath.row].id
+        }
+        cell.configureCell(nft: nfts[indexPath.row], isLiked: isLiked)
         
         return cell
     }
@@ -125,10 +137,33 @@ extension MyNftViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - FavoriteNftsViewControllerDelegate
+extension MyNftViewController: MyNftViewControllerDelegate {
+    func changeLike(nftId: String, liked: Bool) {
+        guard let delegate = delegate else { return }
+        delegate.changeLike(nftId: nftId, liked: liked)
+        
+        if liked {
+            likes = likes.filter { id in
+                id != nftId
+            }
+        } else {
+            likes.append(nftId)
+        }
+        tableView.reloadData()
+    }
+}
+
 //MARK: - Private functions
 private extension MyNftViewController{
     func setupView() {
         view.backgroundColor = .ypWhiteDay
+        
+        guard let profileId = profileId,
+              let profile = ProfileStorageImpl.shared.getProfile(id: profileId) else {
+            return
+        }
+        likes = profile.likes
         
         changeElementsVisibility()
         addSubViews()
@@ -161,10 +196,10 @@ private extension MyNftViewController{
             
             filtersButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
             filtersButton.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
-    
+            
             headerLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
             headerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
+            
             tableView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -173,7 +208,7 @@ private extension MyNftViewController{
     }
     
     func selectCell(cellIndex: Int) {
-
+        
     }
     
     func showSortAlert() {
@@ -182,19 +217,32 @@ private extension MyNftViewController{
             message: nil,
             preferredStyle: .actionSheet
         )
-        alert.addAction(UIAlertAction(title: "По цене",
-                                      style: .default) { _ in
-
+        alert.addAction(UIAlertAction(
+            title: "По цене",
+            style: .default
+        ) { [weak self] _ in
+            
+            guard let self = self else { return }
+            self.nfts.sort(by: { $0.price < $1.price })
+            self.tableView.reloadData()
         })
         alert.addAction(UIAlertAction(
             title: "По рейтингу",
             style: .default
-        ) { _ in
+        ) { [weak self] _ in
+            
+            guard let self = self else { return }
+            self.nfts.sort(by: { $0.rating < $1.rating })
+            self.tableView.reloadData()
         })
         alert.addAction(UIAlertAction(
             title: "По названию",
             style: .default
-        ) { _ in
+        ) { [weak self] _ in
+            
+            guard let self = self else { return }
+            self.nfts.sort(by: { $0.name < $1.name})
+            self.tableView.reloadData()
         })
         alert.addAction(UIAlertAction(
             title: "Закрыть",
@@ -249,7 +297,7 @@ private extension MyNftViewController{
             UIBlockingProgressHUD.dismiss()
             return
         }
-            
+        
         var fetchedNFTs: [NftResult] = []
         let group = DispatchGroup()
         
