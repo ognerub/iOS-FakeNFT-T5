@@ -1,5 +1,5 @@
 //
-//  CollectionViewController.swift
+//  StatCollectionViewController.swift
 //  FakeNFT
 //
 //  Created by Sergey Kemenov on 12.12.2023.
@@ -10,12 +10,12 @@ import UIKit
 // MARK: - State
 
 enum NftsState {
-    case initial, loading, failed(Error), data([NftModel])
+    case initial, loading, failed(Error), data([NftResult])
 }
 
 // MARK: - Class
 
-final class CollectionViewController: UIViewController {
+final class StatCollectionViewController: UIViewController {
     // MARK: - Private properties
 
     private let customNavView = UIView()
@@ -33,7 +33,7 @@ final class CollectionViewController: UIViewController {
     }()
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.register(CollectionCell.self, forCellWithReuseIdentifier: cellID)
+        collectionView.register(StatCollectionCell.self, forCellWithReuseIdentifier: cellID)
         return collectionView
     }()
 
@@ -41,16 +41,19 @@ final class CollectionViewController: UIViewController {
     private var hasUserNfts: Bool
     private var nfts: [NftViewModel] = [] {
         didSet {
-            collectionView.reloadData()
+            print(#fileID, #line, #function, nfts.count)
+           collectionView.reloadData()
         }
     }
     private var profile: ProfileUpdate = ProfileUpdate(name: "", description: "", website: "", likes: []) {
         didSet {
+            print(#fileID, #line, #function, profile)
             collectionView.reloadData()
         }
     }
     private var order: OrderResultModel = OrderResultModel(nfts: [], id: "") {
         didSet {
+            print(#fileID, #line, #function, order)
             collectionView.reloadData()
         }
     }
@@ -61,11 +64,11 @@ final class CollectionViewController: UIViewController {
     }
     private let servicesAssembly: ServicesAssembly
     private let nftsService: NftsServiceProtocol
-    private let nftService: NftServiceProtocol
+    private let nftService: NftService
     private let profileStorage: ProfileStorage = ProfileStorageImpl.shared
     private let profileService = ProfileService.shared
     private let orderService = OrderServiceImpl.shared
-    private let cellID = "CollectionCell"
+    private let cellID = "StatCollectionCell"
 
     // MARK: - Inits
 
@@ -99,7 +102,7 @@ final class CollectionViewController: UIViewController {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
-extension CollectionViewController: UICollectionViewDelegateFlowLayout {
+extension StatCollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -130,7 +133,7 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - UICollectionViewDataSource
 
-extension CollectionViewController: UICollectionViewDataSource {
+extension StatCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         nfts.count
     }
@@ -141,7 +144,7 @@ extension CollectionViewController: UICollectionViewDataSource {
     ) -> UICollectionViewCell {
         guard
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
-                as? CollectionCell else { return UICollectionViewCell()
+                as? StatCollectionCell else { return UICollectionViewCell()
         }
         let nft = nfts[indexPath.item]
         cell.viewModel = NftCellViewModel(
@@ -159,7 +162,7 @@ extension CollectionViewController: UICollectionViewDataSource {
 
 // MARK: - Private methods
 
-private extension CollectionViewController {
+private extension StatCollectionViewController {
     @objc func backButtonCLicked() {
         navigationController?.popViewController(animated: true)
     }
@@ -189,7 +192,9 @@ private extension CollectionViewController {
     }
 
     func loadAllNfts() {
-        nftsService.loadNfts { [weak self] result in
+        print(#fileID, #line, #function)
+
+        nftsService.loadAllNfts() { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let nftsResult):
@@ -201,7 +206,9 @@ private extension CollectionViewController {
 
     }
 
-    func fetchNfts(from nftsResult: [NftModel]) {
+    func fetchNfts(from nftsResult: [NftResult]) {
+        print(#fileID, #line, #function)
+
         let nftsModel = nftsResult.compactMap { result in
             NftViewModel(
                 name: result.name,
@@ -215,7 +222,8 @@ private extension CollectionViewController {
     }
 
     func loadNft() {
-        var loadedNftResults: [NftModel] = []
+        print(#fileID, #line, #function)
+        var loadedNftResults: [NftResult] = []
 
         func loadNftAtIndex(index: Int) {
             guard index < userNfts.count else {
@@ -238,6 +246,7 @@ private extension CollectionViewController {
     }
 
     func loadLikes() {
+        print(#fileID, #line, #function)
         profileService.getProfile { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -258,6 +267,7 @@ private extension CollectionViewController {
     }
 
     private func loadOrder() {
+        print(#fileID, #line, #function)
         orderService.loadOrder(id: "1") { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -278,7 +288,7 @@ private extension CollectionViewController {
 
 // MARK: - Private methods to configure UI
 
-private extension CollectionViewController {
+private extension StatCollectionViewController {
 
     func configureUI() {
         configureViews()

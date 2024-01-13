@@ -1,5 +1,5 @@
 //
-//  CollectionCell.swift
+//  StatCollectionCell.swift
 //  FakeNFT
 //
 //  Created by Sergey Kemenov on 12.12.2023.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Class
 
-final class CollectionCell: UICollectionViewCell, ReuseIdentifying {
+final class StatCollectionCell: UICollectionViewCell, ReuseIdentifying {
     // MARK: - Private UI properties
 
     private let nftImageView: UIImageView = {
@@ -133,7 +133,7 @@ final class CollectionCell: UICollectionViewCell, ReuseIdentifying {
 
 // MARK: - Private methods
 
-private extension CollectionCell {
+private extension StatCollectionCell {
     @objc func likeButtonCLicked() {
         isLiked.toggle()
         let likes = isLiked ? profile.likes + [currentNftId] : profile.likes.filter { $0 != currentNftId }
