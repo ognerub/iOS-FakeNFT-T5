@@ -1,4 +1,4 @@
-# ФейкНФТ (FakeNFT)
+# Магазин НФТ (FakeNFT)
 
 Приложение помогает пользователям просматривать и покупать NFT (Non-Fungible Token). Функционал покупки иммитируется с помощью мокового сервера. Я создавал его в команде с другими студентами и без помощи наставников — мы сами выбирали ахитектуру и способ вёрстки. А ещё работал с моковым сервером, создал таблицы и коллекции, реализовал сетевые запросы, поработал с многопоточностью и хранением данных. Мой эпик - корзина заказов, а также я сверстал экран онбординга и авторизации. А потом добавил свой дизайн онбординга!
 
@@ -11,10 +11,10 @@
 Стек: #Swift, #UICollectionView, #SQL, #CoreData, #MVVM, #UIPageViewController
 
 Создатели:
-@ognerub made `Cart` epic
-@IuriiKarpunov made `Catalog` epic
-@t1k1 made `Profile` epic
-@SKemenov made `Statistics` epic
+* @ognerub made `Cart` epic
+* @IuriiKarpunov made `Catalog` epic
+* @t1k1 made `Profile` epic
+* @SKemenov made `Statistics` epic
 
 Ссылки:
 
