@@ -396,7 +396,7 @@ private extension CollectionViewController {
                     website: profile.website,
                     likes: profile.likes
                 )
-                collectionView.reloadData()
+                self.collectionView.reloadData()
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
                 assertionFailure("Error: \(error)")
@@ -413,7 +413,7 @@ private extension CollectionViewController {
                     nfts: order.nfts,
                     id: order.id
                 )
-                collectionView.reloadData()
+                self.collectionView.reloadData()
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
                 assertionFailure("Error: \(error)")

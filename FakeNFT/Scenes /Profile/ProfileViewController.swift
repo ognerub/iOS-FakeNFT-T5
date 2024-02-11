@@ -155,7 +155,7 @@ extension ProfileViewController: ProfileViewControllerDelegate {
                     )
                 )
                 self.profileId = profile.id
-                updateLayout()
+                self.updateLayout()
                 UIBlockingProgressHUD.dismiss()
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
@@ -258,7 +258,7 @@ private extension ProfileViewController {
                 count: nftsCount,
                 action: { [weak self] in
                     guard let self = self else { return }
-                    let myNftViewController = MyNftViewController(profileId: profileId)
+                    let myNftViewController = MyNftViewController(profileId: self.profileId)
                     myNftViewController.delegate = self
                     myNftViewController.state = .loading
                     myNftViewController.hidesBottomBarWhenPushed = true
@@ -275,7 +275,7 @@ private extension ProfileViewController {
                 action: { [weak self] in
                     guard let self = self else { return }
 
-                    let favoriteNftsViewController = FavoriteNftsViewController(profileId: profileId)
+                    let favoriteNftsViewController = FavoriteNftsViewController(profileId: self.profileId)
                     favoriteNftsViewController.delegate = self
                     favoriteNftsViewController.state = .loading
                     favoriteNftsViewController.hidesBottomBarWhenPushed = true
@@ -300,7 +300,7 @@ private extension ProfileViewController {
     func updateLayout() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self,
-                  let profileId = profileId,
+                  let profileId = self.profileId,
                   let profile = self.profileStorage.getProfile(id: profileId) else {
                 return
             }

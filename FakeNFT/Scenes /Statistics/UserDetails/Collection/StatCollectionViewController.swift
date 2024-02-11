@@ -248,9 +248,9 @@ private extension StatCollectionViewController {
                     website: profile.website,
                     likes: profile.likes
                 )
-                collectionView.reloadData()
+                self.collectionView.reloadData()
             case .failure(let error):
-                presentNetworkAlert(errorDescription: error.localizedDescription) {
+                self.presentNetworkAlert(errorDescription: error.localizedDescription) {
                     self.state = .loading
                 }
             }
@@ -266,9 +266,9 @@ private extension StatCollectionViewController {
                     nfts: order.nfts,
                     id: order.id
                 )
-                collectionView.reloadData()
+                self.collectionView.reloadData()
             case .failure(let error):
-                presentNetworkAlert(errorDescription: error.localizedDescription) {
+                self.presentNetworkAlert(errorDescription: error.localizedDescription) {
                     self.state = .loading
                 }
             }
