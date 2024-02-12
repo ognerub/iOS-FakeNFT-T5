@@ -20,3 +20,16 @@
 
 [Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
 [Скринкаст корзины](https://disk.yandex.ru/i/pnN7cFlJsX-uxQ)
+
+Скриншоты:
+
+<div align="center">
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.30.19.png?raw=true" width="150px"</img>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.30.32.png?raw=true" width="150px"</img>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.30.59.png?raw=true" width="150px"</img>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.31.23.png?raw=true" width="150px"</img>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.31.39.png?raw=true" width="150px"</img><br>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.31.57.png?raw=true" width="150px"</img>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.32.05.png?raw=true" width="150px"</img>
+    <img src="/Screenshots/Simulator Screen Shot - iPhone X - 2024-02-12 at 23.32.10.png?raw=true" width="150px"</img>
+</div>
